@@ -44,12 +44,16 @@ Once pushed, go to https://render.com and:
 
 1. Create Web Service
 2. Select repository: `survey-api-backend`
-3. Configure:
-   - Name: `survey-api`
-   - Build: `npm install`
-   - Start: `npm start`
-4. Add MONGODB_URI environment variable
-5. Deploy!
+3. Render will auto-detect `render.yaml` configuration
+4. Add Environment Variables:
+   - `MONGODB_URI`: Your MongoDB connection string
+5. Click Deploy!
+
+The `render.yaml` file already configures:
+- Build command: `npm install`
+- Start command: `npm start`
+- Service name: `survey-api`
+- Health check endpoint: `/api/health`
 
 ---
 
