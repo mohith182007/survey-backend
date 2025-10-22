@@ -27,12 +27,15 @@ console.log('📝 MONGODB_URI:', process.env.MONGODB_URI ? 'SET' : 'NOT SET');
 // Attempting to connect with whitelisted IP
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/survey_db', {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,
+  connectTimeoutMS: 10000
 })
   .then(() => console.log('✅ MongoDB connected successfully'))
   .catch(err => {
     console.error('❌ MongoDB connection error:', err.message);
-    process.exit(1);
+    console.error('⚠️  Server will continue running without database');
+    // Don't exit - let server continue to serve requests
   });
 
 // Routes
