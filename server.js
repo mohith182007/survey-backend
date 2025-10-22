@@ -24,6 +24,7 @@ console.log('📝 PORT:', process.env.PORT);
 console.log('📝 MONGODB_URI:', process.env.MONGODB_URI ? 'SET' : 'NOT SET');
 
 // MongoDB Connection with error handling
+// Attempting to connect with whitelisted IP
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/survey_db', {
   useNewUrlParser: true,
   useUnifiedTopology: true
