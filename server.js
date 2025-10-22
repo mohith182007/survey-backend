@@ -33,32 +33,24 @@ const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/survey_db
 console.log('📝 Attempting to connect with URI');
 
 // Connection options with multiple fallback strategies
+// Keeping options that actually work with Mongoose 7
 const connectionOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 30000,
   connectTimeoutMS: 30000,
   socketTimeoutMS: 45000,
-  // Additional options for better reliability
-  retryWrites: false,
-  directConnection: true,  // Try direct connection to avoid DNS issues
-  ssl: true,
-  tlsInsecure: false,
   maxPoolSize: 10,
-  minPoolSize: 5,
-  waitQueueTimeoutMS: 10000,
-  // DNS settings
-  family: 4  // Force IPv4
+  minPoolSize: 2,
+  waitQueueTimeoutMS: 10000
 };
 
 console.log('🔧 Connection options:', JSON.stringify({
   serverSelectionTimeoutMS: connectionOptions.serverSelectionTimeoutMS,
   connectTimeoutMS: connectionOptions.connectTimeoutMS,
   socketTimeoutMS: connectionOptions.socketTimeoutMS,
-  directConnection: connectionOptions.directConnection,
-  ssl: connectionOptions.ssl,
   maxPoolSize: connectionOptions.maxPoolSize,
-  family: connectionOptions.family
+  minPoolSize: connectionOptions.minPoolSize
 }));
 
 let connectionAttempt = 0;
