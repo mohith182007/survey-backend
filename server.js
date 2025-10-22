@@ -30,14 +30,14 @@ console.log('📝 Testing MongoDB connection with updated whitelist...');
 
 // MongoDB Connection with error handling
 // Attempting to connect with whitelisted IP
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/survey_db', {
+const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/survey_db';
+console.log('📝 Attempting to connect with URI');
+mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 30000,
   connectTimeoutMS: 30000,
-  socketTimeoutMS: 45000,
-  retryWrites: true,
-  w: 'majority'
+  socketTimeoutMS: 45000
 })
   .then(() => console.log('✅ MongoDB connected successfully'))
   .catch(err => {
