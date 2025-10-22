@@ -22,6 +22,10 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 console.log('📝 NODE_ENV:', process.env.NODE_ENV);
 console.log('📝 PORT:', process.env.PORT);
 console.log('📝 MONGODB_URI:', process.env.MONGODB_URI ? 'SET' : 'NOT SET');
+if (process.env.MONGODB_URI) {
+  const uriStart = process.env.MONGODB_URI.substring(0, 50);
+  console.log('📝 MONGODB_URI starts with:', uriStart + '...');
+}
 console.log('📝 Testing MongoDB connection with updated whitelist...');
 
 // MongoDB Connection with error handling
@@ -29,8 +33,11 @@ console.log('📝 Testing MongoDB connection with updated whitelist...');
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/survey_db', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 5000,
-  connectTimeoutMS: 10000
+  serverSelectionTimeoutMS: 30000,
+  connectTimeoutMS: 30000,
+  socketTimeoutMS: 45000,
+  retryWrites: true,
+  w: 'majority'
 })
   .then(() => console.log('✅ MongoDB connected successfully'))
   .catch(err => {
