@@ -13,3 +13,4 @@ services:
         value: 5000
       - key: MONGODB_URI
         sync: false
+        value: mongodb+srv://surveyadmin:Y2RAL4ZcEgpnGALC@cluster0.fvi0ukr.mongodb.net/survey_db?retryWrites=true&w=majority&appName=Cluster0
