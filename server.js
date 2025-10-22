@@ -48,6 +48,7 @@ app.get('/api/health', (req, res) => {
     status: 'Server is running',
     environment: process.env.NODE_ENV || 'development',
     mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    mongodbUriSet: process.env.MONGODB_URI ? 'YES' : 'NO',
     timestamp: new Date().toISOString()
   });
 });
