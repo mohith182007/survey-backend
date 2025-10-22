@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: survey-api
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        # Simplified connection string - testing without query parameters first
+        value: mongodb+srv://surveyadmin:Y2RAL4ZcEgpnGALC@cluster0.fvi0ukr.mongodb.net/survey_db

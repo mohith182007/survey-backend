@@ -28,23 +28,80 @@ if (process.env.MONGODB_URI) {
 }
 console.log('📝 Testing MongoDB connection with updated whitelist...');
 
-// MongoDB Connection with error handling
-// Attempting to connect with whitelisted IP
+// MongoDB Connection with multiple strategies
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/survey_db';
 console.log('📝 Attempting to connect with URI');
-mongoose.connect(mongoUri, {
+
+// Connection options with multiple fallback strategies
+const connectionOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 30000,
   connectTimeoutMS: 30000,
-  socketTimeoutMS: 45000
-})
-  .then(() => console.log('✅ MongoDB connected successfully'))
-  .catch(err => {
-    console.error('❌ MongoDB connection error:', err.message);
-    console.error('⚠️  Server will continue running without database');
-    // Don't exit - let server continue to serve requests
-  });
+  socketTimeoutMS: 45000,
+  // Additional options for better reliability
+  retryWrites: false,
+  directConnection: true,  // Try direct connection to avoid DNS issues
+  ssl: true,
+  tlsInsecure: false,
+  maxPoolSize: 10,
+  minPoolSize: 5,
+  waitQueueTimeoutMS: 10000,
+  // DNS settings
+  family: 4  // Force IPv4
+};
+
+console.log('🔧 Connection options:', JSON.stringify({
+  serverSelectionTimeoutMS: connectionOptions.serverSelectionTimeoutMS,
+  connectTimeoutMS: connectionOptions.connectTimeoutMS,
+  socketTimeoutMS: connectionOptions.socketTimeoutMS,
+  directConnection: connectionOptions.directConnection,
+  ssl: connectionOptions.ssl,
+  maxPoolSize: connectionOptions.maxPoolSize,
+  family: connectionOptions.family
+}));
+
+let connectionAttempt = 0;
+const maxAttempts = 3;
+
+const attemptConnection = (attempt) => {
+  connectionAttempt = attempt;
+  console.log(`\n📡 Connection Attempt ${attempt}/${maxAttempts}...`);
+  
+  mongoose.connect(mongoUri, connectionOptions)
+    .then(() => {
+      console.log('✅ MongoDB connected successfully');
+      console.log('📊 Connection state:', mongoose.connection.readyState);
+    })
+    .catch(err => {
+      console.error(`❌ Connection attempt ${attempt} failed:`, err.message);
+      console.error('Error code:', err.code);
+      console.error('Error name:', err.name);
+      
+      if (attempt < maxAttempts) {
+        console.log(`⏳ Retrying in 5 seconds...`);
+        setTimeout(() => attemptConnection(attempt + 1), 5000);
+      } else {
+        console.error('⚠️  All connection attempts failed. Server will continue running without database');
+      }
+    });
+};
+
+// Start first connection attempt
+attemptConnection(1);
+
+// Handle connection events
+mongoose.connection.on('connected', () => {
+  console.log('✅ Mongoose connected to MongoDB');
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('⚠️  Mongoose disconnected from MongoDB');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('❌ Mongoose connection error:', err.message);
+});
 
 // Routes
 const surveyRoutes = require('./routes/survey');
