@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 console.log('📝 NODE_ENV:', process.env.NODE_ENV);
 console.log('📝 PORT:', process.env.PORT);
 console.log('📝 MONGODB_URI:', process.env.MONGODB_URI ? 'SET' : 'NOT SET');
+console.log('📝 Testing MongoDB connection with updated whitelist...');
 
 // MongoDB Connection with error handling
 // Attempting to connect with whitelisted IP
