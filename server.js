@@ -18,6 +18,11 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
+// Debug: Log environment variables
+console.log('📝 NODE_ENV:', process.env.NODE_ENV);
+console.log('📝 PORT:', process.env.PORT);
+console.log('📝 MONGODB_URI:', process.env.MONGODB_URI ? 'SET' : 'NOT SET');
+
 // MongoDB Connection with error handling
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/survey_db', {
   useNewUrlParser: true,
