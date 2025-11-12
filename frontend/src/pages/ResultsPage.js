@@ -10,6 +10,44 @@ function ResultsPage({ responseId }) {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [shareMessage, setShareMessage] = useState('');
+
+  const shareText = response?.profile?.name 
+    ? `I just discovered my personality type: ${response.profile.name}! 🌟 Find out yours - take the Personality Discovery Assessment!`
+    : 'Take the Personality Discovery Assessment and find out your personality type!';
+
+  const handleCopyToClipboard = () => {
+    const text = `My Personality: ${response?.profile?.name}\n\n${shareText}`;
+    navigator.clipboard.writeText(text);
+    setShareMessage('Copied to clipboard!');
+    setTimeout(() => setShareMessage(''), 2000);
+  };
+
+  const handleShare = (platform) => {
+    const url = window.location.href;
+    const encodedUrl = encodeURIComponent(url);
+    const encodedText = encodeURIComponent(shareText);
+
+    let shareUrl = '';
+    switch (platform) {
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
+        break;
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`;
+        break;
+      case 'whatsapp':
+        shareUrl = `https://wa.me/?text=${encodedText}%20${encodedUrl}`;
+        break;
+      case 'linkedin':
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+        break;
+      default:
+        return;
+    }
+
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+  };
 
   useEffect(() => {
     // Check if results were passed via navigation state (for local testing)
@@ -183,6 +221,35 @@ function ResultsPage({ responseId }) {
           <p><strong>C = The Empathic Anchor</strong> (Emotionally Open)</p>
           <p><strong>D = The Masked Jester</strong> (Defensive Detachment)</p>
         </div>
+      </div>
+
+      <div className="share-section">
+        <h3>Share Your Results 🎉</h3>
+        <p>Let your friends know your personality type and inspire them to discover theirs!</p>
+        
+        <div className="share-buttons">
+          <button className="share-btn twitter" onClick={() => handleShare('twitter')} title="Share on Twitter">
+            <span className="share-icon">𝕏</span>
+            <span>Twitter</span>
+          </button>
+          <button className="share-btn facebook" onClick={() => handleShare('facebook')} title="Share on Facebook">
+            <span className="share-icon">f</span>
+            <span>Facebook</span>
+          </button>
+          <button className="share-btn whatsapp" onClick={() => handleShare('whatsapp')} title="Share on WhatsApp">
+            <span className="share-icon">💬</span>
+            <span>WhatsApp</span>
+          </button>
+          <button className="share-btn linkedin" onClick={() => handleShare('linkedin')} title="Share on LinkedIn">
+            <span className="share-icon">in</span>
+            <span>LinkedIn</span>
+          </button>
+          <button className="share-btn copy" onClick={handleCopyToClipboard} title="Copy to Clipboard">
+            <span className="share-icon">📋</span>
+            <span>Copy</span>
+          </button>
+        </div>
+        {shareMessage && <p className="share-message">{shareMessage}</p>}
       </div>
 
       <div className="button-group">

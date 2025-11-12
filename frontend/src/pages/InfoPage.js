@@ -53,11 +53,43 @@ function InfoPage({ onUserCreated }) {
       age: Number(formData.age)
     };
     try {
+      console.log('📤 Submitting form with payload:', payload);
       const result = await submitUserInfo(payload);
+      console.log('✅ Form submission successful:', result);
+      
+      if (!result.userId) {
+        console.error('❌ No userId in response:', result);
+        setErrors({ submit: 'Server error: No user ID returned' });
+        setLoading(false);
+        return;
+      }
+      
       onUserCreated(result.userId);
       navigate('/questions');
     } catch (error) {
-      setErrors({ submit: error.error || 'Failed to submit form' });
+      console.error('❌ Form submission error:', error);
+      console.error('Error response:', error.response);
+      console.error('Error message:', error.message);
+      
+      let errorMessage = 'Failed to submit form';
+      
+      // Check for backend error response
+      if (error.response?.data) {
+        console.log('Backend error data:', error.response.data);
+        
+        if (error.response.data.error) {
+          errorMessage = error.response.data.error;
+        } else if (error.response.data.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.response.data.errors && Array.isArray(error.response.data.errors)) {
+          errorMessage = error.response.data.errors[0]?.msg || 'Validation error occurred';
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      console.log('🎯 Final error message:', errorMessage);
+      setErrors({ submit: errorMessage });
     } finally {
       setLoading(false);
     }

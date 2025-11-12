@@ -15,10 +15,12 @@ router.post('/user', [
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.error('❌ Validation errors:', errors.array());
     return res.status(400).json({ errors: errors.array() });
   }
 
   try {
+    console.log('📝 Creating user with email:', req.body.gmail);
     const user = await prisma.user.create({
       data: {
         name: req.body.name,
@@ -29,13 +31,29 @@ router.post('/user', [
       }
     });
 
+    console.log('✅ User created successfully:', user.id);
     res.json({ success: true, userId: user.id });
   } catch (error) {
-    console.error('Error saving user:', error);
+    console.error('❌ Error saving user:', {
+      message: error.message,
+      code: error.code,
+      meta: error.meta,
+      fullError: error
+    });
+    
     if (error.code === 'P2002') {
-      res.status(400).json({ error: 'Email already exists' });
+      console.error('⚠️  Unique constraint violation on:', error.meta?.target);
+      const field = error.meta?.target?.[0] || 'email';
+      res.status(400).json({ 
+        error: `This ${field} is already registered. Please use a different ${field}.`,
+        code: 'DUPLICATE_EMAIL'
+      });
     } else {
-      res.status(500).json({ error: 'Failed to save user information' });
+      res.status(500).json({ 
+        error: 'Failed to save user information. Please try again.',
+        details: error.message,
+        code: 'USER_CREATE_ERROR'
+      });
     }
   }
 });

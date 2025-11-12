@@ -4,172 +4,127 @@ import { submitSurveyResponse } from '../utils/api';
 import { calculatePersonality } from '../utils/personalityCalculator';
 import './QuestionPage.css';
 
-// Question data with answer options
+// Question data with answer options - 10 practical questions with real-life examples
 const QUESTIONS = [
   {
     id: 1,
-    text: "When you face a personal problem, you usually:",
+    text: "Your team makes a mistake in a project. What's your first instinct?",
+    scenario: "Example: Missing deadline or miscommunication",
     options: [
-      { label: "A", text: "Try to solve it alone quietly." },
-      { label: "B", text: "Share it only with close friends after thinking deeply." },
-      { label: "C", text: "Ask for help openly without hesitation." },
-      { label: "D", text: "Avoid thinking about it and distract yourself." }
+      { label: "A", text: "Handle it privately without involving others" },
+      { label: "B", text: "Think it through before discussing with them" },
+      { label: "C", text: "Talk to them immediately to solve it together" },
+      { label: "D", text: "Blame them and distance yourself" }
     ],
     scores: { A: -2, B: -1, C: 2, D: -2 }
   },
   {
     id: 2,
-    text: "When someone offers you help, you:",
+    text: "A friend is going through a tough time and reaches out to you. You:",
+    scenario: "Example: Career crisis, breakup, or family issue",
     options: [
-      { label: "A", text: "Feel uneasy and decline politely." },
-      { label: "B", text: "Accept but feel guilty later." },
-      { label: "C", text: "Welcome it gratefully." },
-      { label: "D", text: "Ignore or change the topic." }
+      { label: "A", text: "Feel uncomfortable and avoid the topic" },
+      { label: "B", text: "Listen but keep things surface-level" },
+      { label: "C", text: "Listen deeply and offer genuine support" },
+      { label: "D", text: "Change the subject to something lighter" }
     ],
     scores: { A: -2, B: -1, C: 2, D: -2 }
   },
   {
     id: 3,
-    text: "If a friend stops talking to you suddenly, you:",
+    text: "At a social gathering, you feel anxious. You:",
+    scenario: "Example: Work party, family reunion, or new friend group",
     options: [
-      { label: "A", text: "Assume they want distance and leave them alone." },
-      { label: "B", text: "Wait for them to reach out first." },
-      { label: "C", text: "Try to talk and understand the reason." },
-      { label: "D", text: "Pretend you don't care." }
+      { label: "A", text: "Leave early or stay isolated in corners" },
+      { label: "B", text: "Stick with familiar people, observe from distance" },
+      { label: "C", text: "Engage openly, start conversations naturally" },
+      { label: "D", text: "Make sarcastic comments or act uninterested" }
+    ],
+    scores: { A: -2, B: -1, C: 2, D: -1 }
+  },
+  {
+    id: 4,
+    text: "Someone gives you critical feedback about your work. You:",
+    scenario: "Example: Boss or peer points out improvement area",
+    options: [
+      { label: "A", text: "Feel hurt and don't want to engage further" },
+      { label: "B", text: "Accept it cautiously and think about it later" },
+      { label: "C", text: "Ask questions and see how you can improve" },
+      { label: "D", text: "Dismiss it or get defensive" }
     ],
     scores: { A: -1, B: 0, C: 2, D: -2 }
   },
   {
-    id: 4,
-    text: "How do you usually express emotional pain?",
-    options: [
-      { label: "A", text: "I hide it completely." },
-      { label: "B", text: "I express it through work or hobbies." },
-      { label: "C", text: "I share it with someone I trust." },
-      { label: "D", text: "I become angry or distant." }
-    ],
-    scores: { A: -2, B: -1, C: 2, D: -2 }
-  },
-  {
     id: 5,
-    text: "In a group setting, when you disagree with something, you:",
+    text: "You're feeling stressed or sad at work. Your colleague notices. You:",
+    scenario: "Example: Bad day, personal issue affecting focus",
     options: [
-      { label: "A", text: "Stay silent even if it bothers you." },
-      { label: "B", text: "Speak gently only if it feels safe." },
-      { label: "C", text: "Express your point openly." },
-      { label: "D", text: "Use sarcasm or avoid the group." }
+      { label: "A", text: "Hide it and say everything's fine" },
+      { label: "B", text: "Mention something vague to avoid detailed conversation" },
+      { label: "C", text: "Open up and share what's troubling you" },
+      { label: "D", text: "Joke about it or get irritable" }
     ],
     scores: { A: -2, B: -1, C: 2, D: -1 }
   },
   {
     id: 6,
-    text: "When you feel overwhelmed, what do you do first?",
+    text: "A close friend hasn't reached out in weeks. You:",
+    scenario: "Example: Friendship seems strained or fading",
     options: [
-      { label: "A", text: "Isolate myself." },
-      { label: "B", text: "Think deeply and write my thoughts." },
-      { label: "C", text: "Contact someone for support." },
-      { label: "D", text: "Distract myself with activities or media." }
+      { label: "A", text: "Assume they don't want contact and disappear" },
+      { label: "B", text: "Wait for them to make the first move" },
+      { label: "C", text: "Reach out genuinely to reconnect" },
+      { label: "D", text: "Feel hurt and act cold toward them" }
     ],
     scores: { A: -2, B: -1, C: 2, D: -1 }
   },
   {
     id: 7,
-    text: "How comfortable are you asking someone for emotional support?",
+    text: "You need help with something you're struggling with. You:",
+    scenario: "Example: Technical skills, emotional support, or advice",
     options: [
-      { label: "A", text: "Very uncomfortable." },
-      { label: "B", text: "Slightly hesitant." },
-      { label: "C", text: "Comfortable and open." },
-      { label: "D", text: "I never ask for help." }
+      { label: "A", text: "Try to figure it out alone, never ask" },
+      { label: "B", text: "Only ask close people when absolutely necessary" },
+      { label: "C", text: "Ask openly and aren't embarrassed about needing help" },
+      { label: "D", text: "Feel too pride-hurt to ask anyone" }
     ],
     scores: { A: -2, B: -1, C: 2, D: -2 }
   },
   {
     id: 8,
-    text: "If someone misunderstands you, you:",
+    text: "Your partner/friend misunderstands your intentions. You:",
+    scenario: "Example: They think you were rude when you were joking",
     options: [
-      { label: "A", text: "Let it go; explanations feel tiring." },
-      { label: "B", text: "Try to correct it later calmly." },
-      { label: "C", text: "Address it immediately." },
-      { label: "D", text: "Keep distance rather than clarifying." }
+      { label: "A", text: "Let it slide and avoid clarifying" },
+      { label: "B", text: "Explain later when emotions settle" },
+      { label: "C", text: "Address it right away with care" },
+      { label: "D", text: "Get defensive or distance yourself" }
     ],
     scores: { A: -1, B: 0, C: 2, D: -1 }
   },
   {
     id: 9,
-    text: "In friendships, you usually:",
+    text: "You see a colleague struggling with their workload. You:",
+    scenario: "Example: They seem overwhelmed or stressed",
     options: [
-      { label: "A", text: "Keep things superficial." },
-      { label: "B", text: "Get close but pull back sometimes." },
-      { label: "C", text: "Maintain open communication." },
-      { label: "D", text: "Stay friendly but emotionally detached." }
-    ],
-    scores: { A: -2, B: -1, C: 2, D: -1 }
-  },
-  {
-    id: 10,
-    text: "How do you react when others share personal feelings?",
-    options: [
-      { label: "A", text: "Feel awkward or unsure how to respond." },
-      { label: "B", text: "Listen but struggle to empathize." },
-      { label: "C", text: "Engage with care and understanding." },
-      { label: "D", text: "Change the topic to something lighter." }
-    ],
-    scores: { A: -1, B: 0, C: 2, D: -2 }
-  },
-  {
-    id: 11,
-    text: "Which statement describes your view of dependence?",
-    options: [
-      { label: "A", text: "Relying on others shows weakness." },
-      { label: "B", text: "It's fine occasionally but risky." },
-      { label: "C", text: "It builds connection and trust." },
-      { label: "D", text: "People always disappoint, so better avoid it." }
-    ],
-    scores: { A: -2, B: -1, C: 2, D: -2 }
-  },
-  {
-    id: 12,
-    text: "When someone notices your sadness, you:",
-    options: [
-      { label: "A", text: "Deny it instantly." },
-      { label: "B", text: "Say you're fine to avoid discussion." },
-      { label: "C", text: "Admit and talk briefly." },
-      { label: "D", text: "Joke to shift attention." }
-    ],
-    scores: { A: -2, B: -1, C: 2, D: -1 }
-  },
-  {
-    id: 13,
-    text: "When you see someone struggling emotionally, you usually:",
-    options: [
-      { label: "A", text: "Avoid getting involved—it feels uncomfortable." },
-      { label: "B", text: "Offer light support but keep emotional distance." },
-      { label: "C", text: "Reach out sincerely to help." },
-      { label: "D", text: "Wait until they ask before acting." }
+      { label: "A", text: "Mind your own business—not your problem" },
+      { label: "B", text: "Offer surface-level support if they ask" },
+      { label: "C", text: "Proactively check in and offer help" },
+      { label: "D", text: "Wait for them to explicitly ask for help" }
     ],
     scores: { A: -2, B: 0, C: 2, D: 0 }
   },
   {
-    id: 14,
-    text: "How do you feel when others express deep emotions around you?",
+    id: 10,
+    text: "When building relationships, you naturally:",
+    scenario: "Example: New colleague, neighbor, or acquaintance",
     options: [
-      { label: "A", text: "It makes me uneasy or awkward." },
-      { label: "B", text: "I listen but find it hard to relate." },
-      { label: "C", text: "I feel connected and understanding." },
-      { label: "D", text: "I often zone out or change the topic." }
+      { label: "A", text: "Keep everyone at a safe distance emotionally" },
+      { label: "B", text: "Share gradually and carefully monitor reactions" },
+      { label: "C", text: "Build connections through genuine, open communication" },
+      { label: "D", text: "Maintain friendliness but avoid real emotional depth" }
     ],
-    scores: { A: -1, B: 0, C: 2, D: -2 }
-  },
-  {
-    id: 15,
-    text: "If someone criticizes your emotional behavior, you:",
-    options: [
-      { label: "A", text: "Withdraw silently and feel hurt." },
-      { label: "B", text: "Justify yourself calmly." },
-      { label: "C", text: "Reflect and try to improve." },
-      { label: "D", text: "Avoid them afterward." }
-    ],
-    scores: { A: -2, B: 0, C: 2, D: -1 }
+    scores: { A: -2, B: -1, C: 2, D: -1 }
   }
 ];
 
@@ -254,10 +209,14 @@ function QuestionPage({ userId, onResponseCreated }) {
 
       <div className="question-container">
         <h2>{question.text}</h2>
+        {question.scenario && <p className="question-scenario">💡 {question.scenario}</p>}
         
         <div className="answer-options">
           {question.options.map((option) => (
-            <label key={option.label} className="option">
+            <label 
+              key={option.label} 
+              className={`option ${answers[currentQuestion] === option.label ? 'selected' : ''}`}
+            >
               <input
                 type="radio"
                 name="answer"
@@ -265,7 +224,7 @@ function QuestionPage({ userId, onResponseCreated }) {
                 checked={answers[currentQuestion] === option.label}
                 onChange={(e) => handleAnswer(e.target.value)}
               />
-              <span className="option-label">{option.label}.</span>
+              <span className="option-label">{option.label}</span>
               <span className="option-text">{option.text}</span>
             </label>
           ))}
