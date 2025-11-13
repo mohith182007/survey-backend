@@ -8,9 +8,8 @@ function InfoPage({ onUserCreated }) {
   const [formData, setFormData] = useState({
     name: '',
     age: '',
-    institution: '',
-    institutionName: '',
-    gmail: ''
+    profession: '',
+    email: ''
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -33,9 +32,8 @@ function InfoPage({ onUserCreated }) {
     const newErrors = {};
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.age || formData.age < 5 || formData.age > 100) newErrors.age = 'Age must be between 5 and 100';
-    if (!formData.institution) newErrors.institution = 'Please select school or university';
-    if (!formData.institutionName.trim()) newErrors.institutionName = 'Institution name is required';
-    if (!formData.gmail.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) newErrors.gmail = 'Valid email is required';
+    if (!formData.profession) newErrors.profession = 'Please select student or working';
+    if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) newErrors.email = 'Valid email is required';
     return newErrors;
   };
 
@@ -160,44 +158,31 @@ function InfoPage({ onUserCreated }) {
               </div>
 
               <div className="form-group">
-                <label htmlFor="institution">Type of Institution *</label>
+                <label htmlFor="profession">Status *</label>
                 <select
-                  id="institution"
-                  name="institution"
-                  value={formData.institution}
+                  id="profession"
+                  name="profession"
+                  value={formData.profession}
                   onChange={handleInputChange}
                 >
                   <option value="">Select an option</option>
-                  <option value="school">School</option>
-                  <option value="university">University</option>
+                  <option value="student">Student</option>
+                  <option value="working">Working Professional</option>
                 </select>
-                {errors.institution && <div className="error">{errors.institution}</div>}
+                {errors.profession && <div className="error">{errors.profession}</div>}
               </div>
 
               <div className="form-group">
-                <label htmlFor="institutionName">Name of Institution *</label>
-                <input
-                  type="text"
-                  id="institutionName"
-                  name="institutionName"
-                  value={formData.institutionName}
-                  onChange={handleInputChange}
-                  placeholder="e.g., ABC School / XYZ University"
-                />
-                {errors.institutionName && <div className="error">{errors.institutionName}</div>}
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="gmail">Gmail Address *</label>
+                <label htmlFor="email">Email Address *</label>
                 <input
                   type="email"
-                  id="gmail"
-                  name="gmail"
-                  value={formData.gmail}
+                  id="email"
+                  name="email"
+                  value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="example@gmail.com"
+                  placeholder="example@email.com"
                 />
-                {errors.gmail && <div className="error">{errors.gmail}</div>}
+                {errors.email && <div className="error">{errors.email}</div>}
               </div>
 
               {errors.submit && <div className="error" style={{ marginBottom: '20px' }}>{errors.submit}</div>}

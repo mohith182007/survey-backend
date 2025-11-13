@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getSurveyResponse } from '../utils/api';
-import { getRating, PERSONALITY_TYPES } from '../utils/personalityCalculator';
+import { getRating } from '../utils/personalityCalculator';
 import './ResultsPage.css';
 
 function ResultsPage({ responseId }) {
@@ -52,7 +52,7 @@ function ResultsPage({ responseId }) {
   useEffect(() => {
     // Check if results were passed via navigation state (for local testing)
     if (location.state?.result) {
-      const { result, surveyData } = location.state;
+      const { result } = location.state;
       setResponse({
         classification: result.type,
         answerCounts: result.answerCounts,
