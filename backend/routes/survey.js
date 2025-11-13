@@ -114,7 +114,7 @@ const sendPersonalityReportEmail = async (userEmail, userName, personalityData) 
 router.post('/user', [
   body('name').trim().notEmpty().withMessage('Name is required'),
   body('age').isInt({ min: 5, max: 100 }).withMessage('Age must be between 5 and 100'),
-  body('profession').isIn(['student', 'working']).withMessage('Profession must be student or working'),
+  body('profession').isIn(['student', 'employed', 'unemployed']).withMessage('Profession must be student, employed, or unemployed'),
   body('email').isEmail().withMessage('Valid email is required')
 ], async (req, res) => {
   const errors = validationResult(req);

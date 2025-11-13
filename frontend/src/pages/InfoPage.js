@@ -32,7 +32,7 @@ function InfoPage({ onUserCreated }) {
     const newErrors = {};
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.age || formData.age < 5 || formData.age > 100) newErrors.age = 'Age must be between 5 and 100';
-    if (!formData.profession) newErrors.profession = 'Please select student or working';
+    if (!formData.profession) newErrors.profession = 'Please select your employment status';
     if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) newErrors.email = 'Valid email is required';
     return newErrors;
   };
@@ -167,7 +167,8 @@ function InfoPage({ onUserCreated }) {
                 >
                   <option value="">Select an option</option>
                   <option value="student">Student</option>
-                  <option value="working">Working Professional</option>
+                  <option value="employed">Employed</option>
+                  <option value="unemployed">Unemployed</option>
                 </select>
                 {errors.profession && <div className="error">{errors.profession}</div>}
               </div>
