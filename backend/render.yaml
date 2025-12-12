@@ -12,5 +12,5 @@ services:
         value: 10000
       - key: DATABASE_URL
         fromDatabase:
-          name: survey_db_n5gn
+          name: survey_so4x
           property: connectionString
